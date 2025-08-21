@@ -36,7 +36,7 @@ describe('OrdersService', () => {
     jest.clearAllMocks(); // limpiar mocks antes de cada prueba
   });
 
-  it('debería retornar órdenes desde cache si existe', async () => {
+  it('prueba retornar órdenes desde cache si existe', async () => {
     const fakeOrders = [{ id: 1, clientName: 'Juan', status: 'initiated' }];
     (mockCache.get as jest.Mock).mockResolvedValue(fakeOrders);
 
@@ -47,7 +47,7 @@ describe('OrdersService', () => {
     expect(mockOrdersRepo.findAll).not.toHaveBeenCalled();
   });
 
-  it('debería consultar DB si no hay cache', async () => {
+  it('prueba consultar DB si no hay cache', async () => {
     const fakeOrders = [{ id: 2, clientName: 'Ana', status: 'sent' }];
     (mockCache.get as jest.Mock).mockResolvedValue(null);
     mockOrdersRepo.findAll.mockResolvedValue(fakeOrders);
@@ -59,7 +59,7 @@ describe('OrdersService', () => {
     expect(mockCache.set).toHaveBeenCalledWith('orders', fakeOrders, 30 * 1000);
   });
 
-  it('debería lanzar error si no encuentra la orden', async () => {
+  it('prueba lanzar error si no encuentra la orden', async () => {
     mockOrdersRepo.findById.mockResolvedValue(null);
 
     await expect(service.getOrder(99)).rejects.toThrow(NotFoundException);

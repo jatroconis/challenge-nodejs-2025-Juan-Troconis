@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Order } from '../entities/order.entity';
 import { OrderItem } from '../entities/order-item.entity';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class OrdersRepository {
@@ -38,5 +39,14 @@ export class OrdersRepository {
 
   async delete(id: number): Promise<void> {
     await this.orderModel.destroy({ where: { id } });
+  }
+
+  async deleteOldDelivered(cutoff: Date): Promise<number> {
+    return this.orderModel.destroy({
+      where: {
+        status: 'delivered',
+        updatedAt: { [Op.lt]: cutoff },
+      },
+    });
   }
 }
